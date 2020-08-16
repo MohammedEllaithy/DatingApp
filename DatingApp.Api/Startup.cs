@@ -1,9 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Text;
-using System.Threading.Tasks;
+using AutoMapper;
 using DatingApp.Api.Data;
 using DatingApp.Api.Helpers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -11,13 +8,11 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 
 namespace DatingApp.Api
@@ -42,9 +37,22 @@ namespace DatingApp.Api
             services.AddCors();
             services.AddDbContext<DataContext>(x => x.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+            services.AddMvc().AddNewtonsoftJson();
+            services.AddMvc()
+            .AddNewtonsoftJson(opt =>
+            {
+                opt.SerializerSettings.ReferenceLoopHandling =
+                      Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+            });
+          
+
             services.AddMvc(options => options.EnableEndpointRouting = false);
             services.AddControllers();
+            services.AddAutoMapper(typeof(DatingRepository).Assembly);
+
             services.AddScoped<IAuthRepository, AuthRepository>();
+            services.AddScoped<IDatingRepository, DatingRepository>();
+
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
               .AddJwtBearer(options => {
                   options.TokenValidationParameters = new TokenValidationParameters
@@ -56,6 +64,9 @@ namespace DatingApp.Api
                       ValidateAudience = false
                   };
               });
+            ////////////////////////////
+     
+            //////////////////////////
 
         }
 
@@ -85,14 +96,14 @@ namespace DatingApp.Api
                 // app.UseExceptionHandler("/error");
                 // app.UseHsts();
             }
-            //  app.UseHttpsRedirection();
+            app.UseHttpsRedirection();
 
             app.UseRouting();
             // app.UseCors("AllowOrigin");
             app.UseCors(x => x.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
 
             app.UseMvc();
-            app.UseAuthentication();
+            app.UseAuthentication(); 
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
