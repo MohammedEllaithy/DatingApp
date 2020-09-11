@@ -35,6 +35,7 @@ namespace DatingApp.Api
             //                    .AllowAnyMethod());
             //});
             services.AddCors();
+            services.Configure<CloudinarySettings>(Configuration.GetSection("CloudinarySettings"));
             services.AddDbContext<DataContext>(x => x.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
             services.AddMvc().AddNewtonsoftJson();
@@ -100,7 +101,7 @@ namespace DatingApp.Api
 
             app.UseRouting();
             // app.UseCors("AllowOrigin");
-            app.UseCors(x => x.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+            app.UseCors(x => x.WithOrigins("http://localhost:4200").AllowAnyHeader().AllowAnyMethod().AllowCredentials());
 
             app.UseMvc();
             app.UseAuthentication(); 
@@ -109,6 +110,7 @@ namespace DatingApp.Api
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+               /// endpoints.MapDefaultControllerRoute();
             });
         }
     }

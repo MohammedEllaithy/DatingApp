@@ -12,9 +12,11 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DatingApp.Api.Controllers
 {
-    //[Authorize("Bearer")]
-    [Authorize(AuthenticationSchemes =
-    JwtBearerDefaults.AuthenticationScheme)]
+    
+   // [Authorize(AuthenticationSchemes =
+    //JwtBearerDefaults.AuthenticationScheme)]
+    [Authorize(AuthenticationSchemes = "Bearer")]
+
     //[Authorize]
 
     [ApiController]
