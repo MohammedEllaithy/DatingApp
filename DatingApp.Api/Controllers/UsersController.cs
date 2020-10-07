@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using DatingApp.Api.Data;
 using DatingApp.Api.Dtos;
+using DatingApp.Api.Helpers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -16,9 +17,8 @@ namespace DatingApp.Api.Controllers
    // [Authorize(AuthenticationSchemes =
     //JwtBearerDefaults.AuthenticationScheme)]
     [Authorize(AuthenticationSchemes = "Bearer")]
-
+    [ServiceFilter(typeof(LogUserActivity))]
     //[Authorize]
-
     [ApiController]
     [Route("api/[controller]")]
     
